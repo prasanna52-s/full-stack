@@ -62,8 +62,8 @@
               <div class="demo-note mb-4" data-demo-notice>
                 <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
                 <p>
-                  <strong>Demo form:</strong> this page validates your details but does not send them yet.
-                  Enquiries are delivered only after the site owner connects an email service or backend.
+                  <strong>Not connected yet:</strong> the enquiry API address has not been set in the
+                  site configuration, so this form validates your details but sends nothing.
                 </p>
               </div>
 
@@ -101,6 +101,13 @@
                   </div>
 
                   <div class="col-md-6">
+                    <label class="form-label" for="phone">Phone / WhatsApp number</label>
+                    <input class="form-control" type="tel" id="phone" name="phone" autocomplete="tel" maxlength="30" placeholder="Include country code" aria-describedby="phone-hint err-phone">
+                    <p class="form-hint" id="phone-hint">Optional — required only if you ask for a phone or WhatsApp reply.</p>
+                    <div class="field-error" id="err-phone" data-error-for="phone"></div>
+                  </div>
+
+                  <div class="col-md-6">
                     <label class="form-label" for="service">Service needed <span class="req" aria-hidden="true">*</span></label>
                     <select class="form-select" id="service" name="service" required aria-describedby="err-service">
                       <option value="">Choose a service</option>
@@ -116,8 +123,21 @@
                   </div>
 
                   <div class="col-md-6">
-                    <fieldset class="method-group h-100" aria-describedby="err-contactMethod">
+                    <label class="form-label" for="college">College / university</label>
+                    <input class="form-control" type="text" id="college" name="college" autocomplete="organization" maxlength="120" placeholder="e.g. Anna University" aria-describedby="err-college">
+                    <div class="field-error" id="err-college" data-error-for="college"></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label" for="department">Department / course</label>
+                    <input class="form-control" type="text" id="department" name="department" maxlength="100" placeholder="e.g. CSE, final year" aria-describedby="err-department">
+                    <div class="field-error" id="err-department" data-error-for="department"></div>
+                  </div>
+
+                  <div class="col-12">
+                    <fieldset class="method-group" aria-describedby="err-contactMethod">
                       <legend>Preferred contact method <span class="req" aria-hidden="true">*</span></legend>
+                      <div class="d-flex flex-wrap gap-3 gap-sm-4">
                       <div class="form-check">
                         <input class="form-check-input" type="radio" name="contactMethod" id="method-email" value="Email">
                         <label class="form-check-label" for="method-email">Email</label>
@@ -134,22 +154,21 @@
                         <input class="form-check-input" type="radio" name="contactMethod" id="method-either" value="Either">
                         <label class="form-check-label" for="method-either">Either is fine</label>
                       </div>
+                      </div>
                     </fieldset>
                     <div class="field-error" id="err-contactMethod" data-error-for="contactMethod"></div>
                   </div>
 
-                  <div class="col-12" data-phone-field hidden>
-                    <label class="form-label" for="phone">Phone / WhatsApp number</label>
-                    <input class="form-control" type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Include country code" aria-describedby="phone-hint err-phone">
-                    <p class="form-hint" id="phone-hint">Only needed if you chose a phone or WhatsApp reply.</p>
-                    <div class="field-error" id="err-phone" data-error-for="phone"></div>
+                  <div class="col-12">
+                    <label class="form-label" for="message">Project details <span class="req" aria-hidden="true">*</span></label>
+                    <textarea class="form-control" id="message" name="message" rows="5" maxlength="3000" placeholder="Subject, topic, deadline and what you need help with…" required aria-describedby="message-hint err-message"></textarea>
+                    <p class="form-hint" id="message-hint">Include the deadline and any format or technology requirements (20–3000 characters).</p>
+                    <div class="field-error" id="err-message" data-error-for="message"></div>
                   </div>
 
-                  <div class="col-12">
-                    <label class="form-label" for="details">Project details <span class="req" aria-hidden="true">*</span></label>
-                    <textarea class="form-control" id="details" name="details" rows="5" placeholder="Subject, topic, deadline and what you need help with…" required aria-describedby="details-hint err-details"></textarea>
-                    <p class="form-hint" id="details-hint">Include the deadline and any format or technology requirements.</p>
-                    <div class="field-error" id="err-details" data-error-for="details"></div>
+                  <div class="ph-honeypot" aria-hidden="true">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
                   </div>
 
                   <div class="col-12 d-flex flex-wrap align-items-center gap-3 pt-1">
@@ -224,7 +243,8 @@
               <p class="mb-0">
                 ProjectHub supports planning, development, review, documentation and presentation.
                 Work submitted for assessment must remain your own and follow your college's rules on
-                outside help. Grades and guaranteed results are never offered.
+                outside help. Grades and guaranteed results are never offered. Enquiry details are
+                emailed to ProjectHub and are not stored in any database.
               </p>
             </div>
           </div>

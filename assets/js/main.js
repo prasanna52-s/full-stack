@@ -12,6 +12,7 @@
     phone: String(rawConfig.phone || "").trim(),
     whatsapp: String(rawConfig.whatsapp || "").trim(),
     location: String(rawConfig.location || "").trim(),
+    apiBaseUrl: String(rawConfig.apiBaseUrl || "").trim(),
     formEndpoint: String(rawConfig.formEndpoint || "").trim(),
     social: rawConfig.social && typeof rawConfig.social === "object" ? rawConfig.social : {}
   };
@@ -150,11 +151,26 @@
   var successText = form.querySelector("[data-success-text]");
   var mailtoLink = form.querySelector("[data-mailto]");
 
-  if (config.formEndpoint && demoNotice) {
+  /* Resolve the enquiry endpoint: explicit override first, then apiBaseUrl,
+     then the local API when the page is served from this machine. */
+  var LOCAL_HOSTNAMES = ["localhost", "127.0.0.1", "[::1]"];
+
+  function resolveEndpoint() {
+    if (config.formEndpoint) return config.formEndpoint;
+
+    var base = config.apiBaseUrl.replace(/\/+$/, "");
+    if (base) return base + "/api/contact";
+
+    var onLocalHost = LOCAL_HOSTNAMES.indexOf(window.location.hostname) !== -1;
+    return onLocalHost ? "http://localhost:5000/api/contact" : "";
+  }
+
+  var endpoint = resolveEndpoint();
+
+  if (endpoint && demoNotice) {
     demoNotice.hidden = true;
   }
 
-  var phoneField = form.querySelector("[data-phone-field]");
   var phoneInput = form.querySelector('[name="phone"]');
   var serviceSelect = form.querySelector('[name="service"]');
 
@@ -164,10 +180,9 @@
   }
 
   function syncPhoneField() {
-    if (!phoneField || !phoneInput) return;
+    if (!phoneInput) return;
     var method = selectedMethod().toLowerCase();
     var needsNumber = method === "phone" || method === "whatsapp";
-    phoneField.hidden = !needsNumber;
     phoneInput.required = needsNumber;
     if (!needsNumber && phoneInput.value) {
       setError("phone", "");
@@ -206,13 +221,34 @@
     service: function (value) {
       return value ? "" : "Choose the kind of support you are looking for.";
     },
-    details: function (value) {
-      return value.trim().length >= 20 ? "" : "Add at least 20 characters so the project can be understood.";
+    message: function (value) {
+      var length = value.trim().length;
+      if (length < 20) return "Add at least 20 characters so the project can be understood.";
+      if (length > 3000) return "Keep the project details under 3000 characters.";
+      return "";
+    },
+    college: function (value) {
+      return value.trim().length <= 120 ? "" : "Keep the college name under 120 characters.";
+    },
+    department: function (value) {
+      return value.trim().length <= 100 ? "" : "Keep the department under 100 characters.";
     },
     phone: function (value) {
+      var trimmed = value.trim();
       var method = selectedMethod().toLowerCase();
-      if (method !== "phone" && method !== "whatsapp") return "";
-      return value.replace(/\D/g, "").length >= 7 ? "" : "Add a number that can be reached on this channel.";
+
+      if (!trimmed) {
+        return method === "phone" || method === "whatsapp"
+          ? "Add a number that can be reached on this channel."
+          : "";
+      }
+
+      var digits = trimmed.replace(/\D/g, "");
+      if (!/^[\d+()\-.\s]+$/.test(trimmed) || digits.length < 7 || digits.length > 15) {
+        return "Enter a phone number with 7–15 digits, including the country code.";
+      }
+
+      return "";
     }
   };
 
@@ -249,6 +285,44 @@
     if (mailtoLink) mailtoLink.hidden = true;
   }
 
+  var submitting = false;
+
+  function setSubmitting(button, busy) {
+    form.setAttribute("aria-busy", busy ? "true" : "false");
+    if (!button) return;
+    button.disabled = busy;
+
+    if (busy) {
+      button.dataset.label = button.innerHTML;
+      button.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Sending…';
+    } else if (button.dataset.label) {
+      button.innerHTML = button.dataset.label;
+    }
+  }
+
+  function applyServerErrors(body) {
+    if (!body || !body.errors || typeof body.errors !== "object") return;
+
+    Object.keys(body.errors).forEach(function (field) {
+      if (form.querySelector('[name="' + field + '"]')) {
+        showFieldError(field, String(body.errors[field] || ""));
+      }
+    });
+  }
+
+  function clearFieldState() {
+    form.querySelectorAll('[aria-invalid="true"]').forEach(function (field) {
+      field.classList.remove("is-invalid");
+      field.removeAttribute("aria-invalid");
+    });
+
+    form.querySelectorAll(".field-error.show").forEach(function (element) {
+      element.classList.remove("show");
+      element.textContent = "";
+    });
+  }
+
   form.addEventListener("input", function (event) {
     var name = event.target.name;
     if (name && rules[name]) {
@@ -265,8 +339,10 @@
       "Service: " + payload.serviceLabel,
       "Preferred contact: " + payload.contactMethod,
       payload.phone ? "Phone / WhatsApp: " + payload.phone : "",
+      payload.college ? "College: " + payload.college : "",
+      payload.department ? "Department: " + payload.department : "",
       "",
-      payload.details
+      payload.message
     ].filter(Boolean).join("\n");
 
     return "mailto:" + config.email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
@@ -274,17 +350,16 @@
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
+    if (submitting) return;
     resetPanels();
 
     var invalid = [];
 
-    ["name", "email", "service", "details"].forEach(function (name) {
+    ["name", "email", "service", "message", "college", "department"].forEach(function (name) {
       if (validateField(name)) invalid.push(name);
     });
 
-    if (phoneField && !phoneField.hidden) {
-      if (validateField("phone")) invalid.push("phone");
-    }
+    if (validateField("phone")) invalid.push("phone");
 
     if (!selectedMethod()) {
       showFieldError("contactMethod", "Choose how you would prefer to be contacted.");
@@ -307,14 +382,18 @@
     }
 
     var chosen = serviceSelect && serviceSelect.selectedOptions[0];
+    var honeypot = form.querySelector('[name="company"]');
     var payload = {
       name: form.querySelector('[name="name"]').value.trim(),
       email: form.querySelector('[name="email"]').value.trim(),
+      phone: phoneInput ? phoneInput.value.trim() : "",
       service: serviceSelect ? serviceSelect.value : "",
       serviceLabel: chosen ? chosen.textContent.trim() : "",
-      details: form.querySelector('[name="details"]').value.trim(),
+      college: form.querySelector('[name="college"]').value.trim(),
+      department: form.querySelector('[name="department"]').value.trim(),
+      message: form.querySelector('[name="message"]').value.trim(),
       contactMethod: selectedMethod(),
-      phone: phoneInput ? phoneInput.value.trim() : ""
+      company: honeypot ? honeypot.value : ""
     };
 
     function showSuccess(title, message) {
@@ -341,7 +420,7 @@
       errorPanel.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
-    if (!config.formEndpoint) {
+    if (!endpoint) {
       showSuccess(
         "Demo form — nothing was sent",
         "This enquiry form is a front-end demo: your details were validated but not submitted anywhere. Once the site owner connects an email service or backend, enquiries will be delivered automatically."
@@ -350,36 +429,60 @@
     }
 
     var submitButton = form.querySelector('[type="submit"]');
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.dataset.label = submitButton.innerHTML;
-      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Sending…';
-    }
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timeoutId = controller
+      ? window.setTimeout(function () {
+          controller.abort();
+        }, 20000)
+      : 0;
 
-    fetch(config.formEndpoint, {
+    submitting = true;
+    setSubmitting(submitButton, true);
+
+    fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller ? controller.signal : undefined
     })
       .then(function (response) {
-        if (!response.ok) throw new Error("Request failed with status " + response.status);
-        showSuccess(
-          "Enquiry sent",
-          "Your details were submitted successfully. Use the contact method you selected to follow up."
+        return response
+          .json()
+          .catch(function () {
+            return {};
+          })
+          .then(function (body) {
+            return { ok: response.ok, body: body };
+          });
+      })
+      .then(function (result) {
+        if (result.ok) {
+          showSuccess(
+            "Enquiry sent",
+            (result.body && result.body.message) ||
+              "Thanks — your enquiry was sent. A reply will follow using the contact method you chose."
+          );
+          form.reset();
+          clearFieldState();
+          syncPhoneField();
+          return;
+        }
+
+        applyServerErrors(result.body);
+        showFailure(
+          (result.body && result.body.message) ||
+            "The enquiry could not be sent. Please check your details and try again."
         );
-        form.reset();
-        syncPhoneField();
       })
       .catch(function () {
         showFailure(
-          "The enquiry could not be sent. Please try again in a moment, or use a direct contact option if one is listed."
+          "The enquiry could not reach the server. Check your connection and try again in a moment."
         );
       })
       .finally(function () {
-        if (submitButton) {
-          submitButton.disabled = false;
-          if (submitButton.dataset.label) submitButton.innerHTML = submitButton.dataset.label;
-        }
+        window.clearTimeout(timeoutId);
+        submitting = false;
+        setSubmitting(submitButton, false);
       });
   });
 })();

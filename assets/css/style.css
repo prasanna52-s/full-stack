@@ -1205,6 +1205,14 @@ a:hover {
   color: var(--ph-mint);
 }
 
+.ph-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .demo-note {
   display: flex;
   gap: 0.65rem;
