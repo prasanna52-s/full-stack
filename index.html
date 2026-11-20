@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProjectHub — Academic Project Guidance &amp; Development Support</title>
+  <meta name="description" content="ProjectHub provides academic project guidance and development support for college students — assignments, mini projects, final-year builds, documentation and presentations.">
+  <meta name="theme-color" content="#070a16">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header>
+    <nav class="navbar navbar-expand-lg fixed-top site-nav" data-navbar aria-label="Primary">
+      <div class="container">
+        <a class="navbar-brand" href="index.html" aria-label="ProjectHub home">
+          <span class="brand-mark" aria-hidden="true"><i class="bi bi-code-slash"></i></span>
+          <span class="brand-name">Project<span>Hub</span></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav" aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span class="navbar-toggler-icon-ph" aria-hidden="true"><i class="bi bi-list"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="primaryNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center">
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="row align-items-center g-4 g-lg-5">
+          <div class="col-lg-6">
+            <div class="hero-copy">
+              <span class="pill"><i class="bi bi-stars" aria-hidden="true"></i> Professional Academic Solutions</span>
+              <h1 class="hero-title">Build Your College Projects <span class="text-gradient">With Confidence</span></h1>
+              <p class="hero-lead">
+                Guidance and development support for assignments, mini projects and final-year projects —
+                including documentation, presentations and software development. Clear scope, explained
+                decisions, and work you can confidently call your own.
+              </p>
+              <div class="hero-actions">
+                <a class="btn btn-brand btn-lg" href="services.html">
+                  Explore Services <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                </a>
+                <a class="btn btn-ghost btn-lg" href="contact.html#enquiry-form">
+                  Get Started <i class="bi bi-chat-dots ms-1" aria-hidden="true"></i>
+                </a>
+              </div>
+              <ul class="hero-points">
+                <li><i class="bi bi-patch-check" aria-hidden="true"></i> Quality Work</li>
+                <li><i class="bi bi-clock-history" aria-hidden="true"></i> On-Time Delivery</li>
+                <li><i class="bi bi-people" aria-hidden="true"></i> Student Friendly</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="hero-visual" aria-hidden="true">
+              <div class="code-window">
+                <div class="code-window__bar">
+                  <span class="bar-dot"></span>
+                  <span class="bar-dot bar-dot--amber"></span>
+                  <span class="bar-dot bar-dot--green"></span>
+                  <span class="code-window__file"><i class="bi bi-filetype-js"></i> project-plan.js</span>
+                </div>
+                <pre><code><span class="tok-com">// projecthub / plan.js</span>
+<span class="tok-key">const</span> project <span class="tok-punc">=</span> <span class="tok-punc">{</span>
+  type<span class="tok-punc">:</span> <span class="tok-str">"final-year"</span><span class="tok-punc">,</span>
+  stack<span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-str">"react"</span><span class="tok-punc">,</span> <span class="tok-str">"node"</span><span class="tok-punc">]</span><span class="tok-punc">,</span>
+  scope<span class="tok-punc">:</span> <span class="tok-str">"documented + reviewed"</span><span class="tok-punc">,</span>
+  status<span class="tok-punc">:</span> <span class="tok-str">"on-track"</span>
+<span class="tok-punc">};</span>
+
+<span class="tok-key">function</span> <span class="tok-fn">nextStep</span><span class="tok-punc">(</span>daysLeft<span class="tok-punc">)</span> <span class="tok-punc">{</span>
+  <span class="tok-key">return</span> daysLeft <span class="tok-punc">&gt;</span> <span class="tok-num">0</span>
+    <span class="tok-punc">?</span> <span class="tok-str">"review &amp; refine"</span>
+    <span class="tok-punc">:</span> <span class="tok-str">"submit with clarity"</span><span class="tok-punc">;</span>
+<span class="tok-punc">}</span></code></pre>
+              </div>
+
+              <div class="float-card float-card--a">
+                <span class="fc-icon fc-icon--purple"><i class="bi bi-code-square"></i></span>
+                <span>
+                  <span class="fc-title d-block">Web Development</span>
+                  <span class="fc-meta d-block">React · Node · responsive</span>
+                </span>
+              </div>
+              <div class="float-card float-card--b">
+                <span class="fc-icon fc-icon--cyan"><i class="bi bi-file-earmark-text"></i></span>
+                <span>
+                  <span class="fc-title d-block">Documentation</span>
+                  <span class="fc-meta d-block">Reports · diagrams · slides</span>
+                </span>
+              </div>
+              <div class="float-card float-card--c">
+                <span class="fc-icon fc-icon--mint"><i class="bi bi-mortarboard"></i></span>
+                <span>
+                  <span class="fc-title d-block">Project Guidance</span>
+                  <span class="fc-meta d-block">Scope · reviews · viva prep</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust indicators (non-numeric, no unverified statistics) -->
+    <section class="section--tight" aria-label="What you can expect from ProjectHub">
+      <div class="container">
+        <div class="trust-panel">
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true"><i class="bi bi-compass"></i></span>
+            <div>
+              <h2>Guidance-led support</h2>
+              <p>Decisions are explained, so you can defend the work in a review.</p>
+            </div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true"><i class="bi bi-calendar-check"></i></span>
+            <div>
+              <h2>Scope agreed upfront</h2>
+              <p>Deliverables, format and dates confirmed before work begins.</p>
+            </div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true"><i class="bi bi-file-earmark-code"></i></span>
+            <div>
+              <h2>Reviewable work</h2>
+              <p>Readable code, setup notes and a walkthrough you can keep.</p>
+            </div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span>
+            <div>
+              <h2>Academic integrity</h2>
+              <p>Support that respects your own contribution and college rules.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services preview -->
+    <section class="section">
+      <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+          <div class="section-head mb-4">
+            <span class="eyebrow">Services</span>
+            <h2>Practical help for every stage of your project</h2>
+            <p>Start with a single assignment or a full final-year build. Each service is scoped to what you actually need.</p>
+          </div>
+          <a class="btn btn-ghost mb-4" href="services.html">All services <i class="bi bi-arrow-up-right ms-1" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div class="col">
+            <article class="service-card">
+              <span class="service-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
+              <h3>College Assignments</h3>
+              <p>Subject-wise assignments, lab records and reports explained step by step, with formatting that matches your department's template.</p>
+              <a class="service-link" href="services.html#assignments">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </article>
+          </div>
+          <div class="col">
+            <article class="service-card">
+              <span class="service-icon" aria-hidden="true"><i class="bi bi-cpu"></i></span>
+              <h3>Mini Projects</h3>
+              <p>Small, well-scoped builds in Python, Java, C++, IoT or data — with setup help, a working demo and a walkthrough session.</p>
+              <a class="service-link" href="services.html#mini-projects">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </article>
+          </div>
+          <div class="col">
+            <article class="service-card">
+              <span class="service-icon" aria-hidden="true"><i class="bi bi-globe2"></i></span>
+              <h3>Web Development</h3>
+              <p>Responsive websites and web apps with clean front-end code, sensible structure and deployment guidance.</p>
+              <a class="service-link" href="services.html#web-development">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </article>
+          </div>
+          <div class="col">
+            <article class="service-card">
+              <span class="service-icon" aria-hidden="true"><i class="bi bi-code-square"></i></span>
+              <h3>Software Projects</h3>
+              <p>Application builds with planning, version control and testing, plus documentation you can submit alongside the code.</p>
+              <a class="service-link" href="services.html#software-projects">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </article>
+          </div>
+          <div class="col">
+            <article class="service-card">
+              <span class="service-icon" aria-hidden="true"><i class="bi bi-easel2"></i></span>
+              <h3>Documentation &amp; Presentations</h3>
+              <p>Reports, IEEE-style formatting, diagrams and slide decks that line up with your college's submission format.</p>
+              <a class="service-link" href="services.html#documentation">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </article>
+          </div>
+          <div class="col">
+            <article class="service-card">
+              <span class="service-icon" aria-hidden="true"><i class="bi bi-compass"></i></span>
+              <h3>Project Guidance</h3>
+              <p>Topic selection, scope control, debugging sessions and review preparation — support that keeps you in the driver's seat.</p>
+              <a class="service-link" href="services.html#guidance">Learn more <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to action -->
+    <section class="section--tight">
+      <div class="container">
+        <div class="cta-band">
+          <h2>Have a Project in Mind?</h2>
+          <p>Share the brief, the deadline and where you are stuck. You'll get a clear view of what support makes sense before anything starts.</p>
+          <div class="cta-actions">
+            <a class="btn btn-brand btn-lg" href="contact.html">
+              Contact ProjectHub <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+            </a>
+            <a class="btn btn-outline-light-ph btn-lg" href="services.html">
+              Compare Services
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <a class="footer-brand" href="index.html">
+            <span class="brand-mark" aria-hidden="true"><i class="bi bi-code-slash"></i></span>
+            <span>ProjectHub</span>
+          </a>
+          <p class="footer-about">
+            Academic project guidance and development support for college students — assignments,
+            mini projects, final-year builds, documentation and presentations.
+          </p>
+          <div class="social-row" data-socials hidden></div>
+        </div>
+
+        <div class="col-6 col-lg-2">
+          <h2 class="footer-title">Quick links</h2>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <h2 class="footer-title">Services</h2>
+          <ul class="footer-links">
+            <li><a href="services.html#assignments">College Assignments</a></li>
+            <li><a href="services.html#mini-projects">Mini Projects</a></li>
+            <li><a href="services.html#web-development">Web Development</a></li>
+            <li><a href="services.html#documentation">Documentation</a></li>
+            <li><a href="services.html#guidance">Project Guidance</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3">
+          <h2 class="footer-title">Contact</h2>
+          <ul class="footer-links">
+            <li data-contact-row="email" hidden>
+              <a data-contact-text href="contact.html#enquiry-form"><i class="bi bi-envelope" aria-hidden="true"></i> Email</a>
+            </li>
+            <li data-contact-row="phone" hidden>
+              <a data-contact-text href="contact.html#enquiry-form"><i class="bi bi-telephone" aria-hidden="true"></i> Phone</a>
+            </li>
+            <li data-contact-row="whatsapp" hidden>
+              <a data-contact-text href="contact.html#enquiry-form"><i class="bi bi-whatsapp" aria-hidden="true"></i> WhatsApp</a>
+            </li>
+            <li data-contact-row="location" hidden>
+              <span class="contact-row"><i class="bi bi-geo-alt" aria-hidden="true"></i><span data-contact-text></span></span>
+            </li>
+            <li>
+              <a href="contact.html#enquiry-form"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Send an enquiry</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span data-year>2026</span> ProjectHub. All rights reserved.</p>
+        <p class="footer-note">Project support and guidance — work submitted for assessment must remain your own.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

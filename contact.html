@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact ProjectHub — Start a Project Enquiry</title>
+  <meta name="description" content="Contact ProjectHub about assignments, mini projects, final-year builds, documentation or guidance. Share a short brief, deadline and preferred contact method.">
+  <meta name="theme-color" content="#070a16">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header>
+    <nav class="navbar navbar-expand-lg fixed-top site-nav" data-navbar aria-label="Primary">
+      <div class="container">
+        <a class="navbar-brand" href="index.html" aria-label="ProjectHub home">
+          <span class="brand-mark" aria-hidden="true"><i class="bi bi-code-slash"></i></span>
+          <span class="brand-name">Project<span>Hub</span></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav" aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span class="navbar-toggler-icon-ph" aria-hidden="true"><i class="bi bi-list"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="primaryNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <span class="pill"><i class="bi bi-chat-dots" aria-hidden="true"></i> Contact</span>
+        <h1>Tell ProjectHub about your project</h1>
+        <p>
+          A short brief is enough to start. Share what the project involves, when it is due and how
+          you would prefer to be contacted — you will get a clear reply about what support makes sense.
+        </p>
+      </div>
+    </section>
+
+    <section class="pb-4">
+      <div class="container">
+        <div class="row g-4 g-lg-5">
+          <div class="col-lg-7">
+            <div class="form-card" id="enquiry-form">
+              <h2 class="h4 mb-2">Project enquiry</h2>
+              <p class="mb-4">Fields marked with <span class="req">*</span> are required. Nothing is shared beyond the enquiry.</p>
+
+              <div class="demo-note mb-4" data-demo-notice>
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                <p>
+                  <strong>Demo form:</strong> this page validates your details but does not send them yet.
+                  Enquiries are delivered only after the site owner connects an email service or backend.
+                </p>
+              </div>
+
+              <form data-enquiry-form novalidate>
+                <div class="form-status" data-form-error role="alert" tabindex="-1" hidden>
+                  <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                  <div>
+                    <strong>Check your details</strong>
+                    <p data-error-text>Please review the highlighted fields and try again.</p>
+                  </div>
+                </div>
+
+                <div class="form-status form-status--success" data-form-success role="status" tabindex="-1" hidden>
+                  <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                  <div>
+                    <strong data-success-title>Demo form — nothing was sent</strong>
+                    <p data-success-text></p>
+                    <a class="btn btn-ghost btn-sm mt-3" data-mailto hidden>
+                      <i class="bi bi-envelope me-1" aria-hidden="true"></i> Open email draft
+                    </a>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label" for="name">Full name <span class="req" aria-hidden="true">*</span></label>
+                    <input class="form-control" type="text" id="name" name="name" autocomplete="name" placeholder="e.g. Ananya Rao" required aria-describedby="err-name">
+                    <div class="field-error" id="err-name" data-error-for="name"></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label" for="email">Email address <span class="req" aria-hidden="true">*</span></label>
+                    <input class="form-control" type="email" id="email" name="email" autocomplete="email" placeholder="name@college.edu" required aria-describedby="err-email">
+                    <div class="field-error" id="err-email" data-error-for="email"></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label" for="service">Service needed <span class="req" aria-hidden="true">*</span></label>
+                    <select class="form-select" id="service" name="service" required aria-describedby="err-service">
+                      <option value="">Choose a service</option>
+                      <option value="assignments">College Assignments</option>
+                      <option value="mini-projects">Mini Projects</option>
+                      <option value="web-development">Web Development</option>
+                      <option value="software-projects">Software Projects</option>
+                      <option value="documentation">Documentation &amp; Presentations</option>
+                      <option value="guidance">Project Guidance</option>
+                      <option value="other">Something else</option>
+                    </select>
+                    <div class="field-error" id="err-service" data-error-for="service"></div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <fieldset class="method-group h-100" aria-describedby="err-contactMethod">
+                      <legend>Preferred contact method <span class="req" aria-hidden="true">*</span></legend>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="contactMethod" id="method-email" value="Email">
+                        <label class="form-check-label" for="method-email">Email</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="contactMethod" id="method-phone" value="Phone">
+                        <label class="form-check-label" for="method-phone">Phone call</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="contactMethod" id="method-whatsapp" value="WhatsApp">
+                        <label class="form-check-label" for="method-whatsapp">WhatsApp</label>
+                      </div>
+                      <div class="form-check mb-0">
+                        <input class="form-check-input" type="radio" name="contactMethod" id="method-either" value="Either">
+                        <label class="form-check-label" for="method-either">Either is fine</label>
+                      </div>
+                    </fieldset>
+                    <div class="field-error" id="err-contactMethod" data-error-for="contactMethod"></div>
+                  </div>
+
+                  <div class="col-12" data-phone-field hidden>
+                    <label class="form-label" for="phone">Phone / WhatsApp number</label>
+                    <input class="form-control" type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Include country code" aria-describedby="phone-hint err-phone">
+                    <p class="form-hint" id="phone-hint">Only needed if you chose a phone or WhatsApp reply.</p>
+                    <div class="field-error" id="err-phone" data-error-for="phone"></div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label" for="details">Project details <span class="req" aria-hidden="true">*</span></label>
+                    <textarea class="form-control" id="details" name="details" rows="5" placeholder="Subject, topic, deadline and what you need help with…" required aria-describedby="details-hint err-details"></textarea>
+                    <p class="form-hint" id="details-hint">Include the deadline and any format or technology requirements.</p>
+                    <div class="field-error" id="err-details" data-error-for="details"></div>
+                  </div>
+
+                  <div class="col-12 d-flex flex-wrap align-items-center gap-3 pt-1">
+                    <button class="btn btn-brand" type="submit">
+                      Send enquiry <i class="bi bi-send ms-1" aria-hidden="true"></i>
+                    </button>
+                    <span class="form-hint">You'll see a confirmation on this page — no reload.</span>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="card-surface mb-4">
+              <h2 class="h5 mb-3">What happens next</h2>
+              <ol class="step-list">
+                <li>
+                  <span class="process-number" aria-hidden="true">01</span>
+                  <div>
+                    <h3>Brief reviewed</h3>
+                    <p>The details are read together with the deadline and format requirements.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="process-number" aria-hidden="true">02</span>
+                  <div>
+                    <h3>Scope confirmed</h3>
+                    <p>You hear what support is possible, what it covers and what stays with you.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="process-number" aria-hidden="true">03</span>
+                  <div>
+                    <h3>Timeline agreed</h3>
+                    <p>Review points and handover dates are set around your submission date.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="process-number" aria-hidden="true">04</span>
+                  <div>
+                    <h3>Work begins</h3>
+                    <p>Progress is shared as it happens, with questions answered along the way.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <div class="card-surface mb-4" data-contact-card hidden>
+              <h2 class="h5 mb-2">Direct contact</h2>
+              <div class="contact-row" data-contact-row="email" hidden>
+                <i class="bi bi-envelope" aria-hidden="true"></i>
+                <a data-contact-text href="contact.html#enquiry-form">Email</a>
+              </div>
+              <div class="contact-row" data-contact-row="phone" hidden>
+                <i class="bi bi-telephone" aria-hidden="true"></i>
+                <a data-contact-text href="contact.html#enquiry-form">Phone</a>
+              </div>
+              <div class="contact-row" data-contact-row="whatsapp" hidden>
+                <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                <a data-contact-text href="contact.html#enquiry-form">WhatsApp</a>
+              </div>
+              <div class="contact-row" data-contact-row="location" hidden>
+                <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                <span data-contact-text></span>
+              </div>
+              <div class="social-row" data-socials hidden></div>
+            </div>
+
+            <div class="note-card">
+              <h2 class="h6 mb-2"><i class="bi bi-shield-check me-2" aria-hidden="true"></i>Before you send</h2>
+              <p class="mb-0">
+                ProjectHub supports planning, development, review, documentation and presentation.
+                Work submitted for assessment must remain your own and follow your college's rules on
+                outside help. Grades and guaranteed results are never offered.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <a class="footer-brand" href="index.html">
+            <span class="brand-mark" aria-hidden="true"><i class="bi bi-code-slash"></i></span>
+            <span>ProjectHub</span>
+          </a>
+          <p class="footer-about">
+            Academic project guidance and development support for college students — assignments,
+            mini projects, final-year builds, documentation and presentations.
+          </p>
+          <div class="social-row" data-socials hidden></div>
+        </div>
+
+        <div class="col-6 col-lg-2">
+          <h2 class="footer-title">Quick links</h2>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <h2 class="footer-title">Services</h2>
+          <ul class="footer-links">
+            <li><a href="services.html#assignments">College Assignments</a></li>
+            <li><a href="services.html#mini-projects">Mini Projects</a></li>
+            <li><a href="services.html#web-development">Web Development</a></li>
+            <li><a href="services.html#documentation">Documentation</a></li>
+            <li><a href="services.html#guidance">Project Guidance</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3">
+          <h2 class="footer-title">Contact</h2>
+          <ul class="footer-links">
+            <li data-contact-row="email" hidden>
+              <a data-contact-text href="contact.html#enquiry-form"><i class="bi bi-envelope" aria-hidden="true"></i> Email</a>
+            </li>
+            <li data-contact-row="phone" hidden>
+              <a data-contact-text href="contact.html#enquiry-form"><i class="bi bi-telephone" aria-hidden="true"></i> Phone</a>
+            </li>
+            <li data-contact-row="whatsapp" hidden>
+              <a data-contact-text href="contact.html#enquiry-form"><i class="bi bi-whatsapp" aria-hidden="true"></i> WhatsApp</a>
+            </li>
+            <li data-contact-row="location" hidden>
+              <span class="contact-row"><i class="bi bi-geo-alt" aria-hidden="true"></i><span data-contact-text></span></span>
+            </li>
+            <li>
+              <a href="contact.html#enquiry-form"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Send an enquiry</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span data-year>2026</span> ProjectHub. All rights reserved.</p>
+        <p class="footer-note">Project support and guidance — work submitted for assessment must remain your own.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
