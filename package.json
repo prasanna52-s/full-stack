@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "ProjectHub static frontend plus the /api/contact serverless function and the standalone server/ API.",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
-    "start": "node server/server.js",
+    "api": "node server/server.js",
     "check": "node --check server/server.js && node --check api/contact.js && node --check api/health.js"
   },
   "dependencies": {
