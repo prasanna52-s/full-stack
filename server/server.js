@@ -299,7 +299,16 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "16kb" }));
+// Serverless hosts (Vercel) may pass an already-parsed body. Skip parsing in
+// that case so the same app behaves identically on a Node server and a function.
+const limitedJson = express.json({ limit: "16kb" });
+
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
+    return next();
+  }
+  return limitedJson(req, res, next);
+});
 
 const contactLimiter = rateLimit({
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
@@ -422,4 +431,4 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { app, startServer, validateEnquiry };
+module.exports = { app, startServer, validateEnquiry, isMailConfigured: () => MAIL_CONFIGURED };

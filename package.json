@@ -1,0 +1,20 @@
+{
+  "name": "projecthub-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ProjectHub static frontend plus the /api/contact serverless function and the standalone server/ API.",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "check": "node --check server/server.js && node --check api/contact.js && node --check api/health.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "nodemailer": "^6.9.16"
+  }
+}

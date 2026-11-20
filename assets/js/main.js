@@ -144,7 +144,6 @@
   var form = document.querySelector("[data-enquiry-form]");
   if (!form) return;
 
-  var demoNotice = document.querySelector("[data-demo-notice]");
   var errorPanel = form.querySelector("[data-form-error]");
   var successPanel = form.querySelector("[data-form-success]");
   var successTitle = form.querySelector("[data-success-title]");
@@ -152,7 +151,7 @@
   var mailtoLink = form.querySelector("[data-mailto]");
 
   /* Resolve the enquiry endpoint: explicit override first, then apiBaseUrl,
-     then the local API when the page is served from this machine. */
+     then the local API, then the API deployed alongside the site. */
   var LOCAL_HOSTNAMES = ["localhost", "127.0.0.1", "[::1]"];
 
   function resolveEndpoint() {
@@ -162,14 +161,12 @@
     if (base) return base + "/api/contact";
 
     var onLocalHost = LOCAL_HOSTNAMES.indexOf(window.location.hostname) !== -1;
-    return onLocalHost ? "http://localhost:5000/api/contact" : "";
+    if (onLocalHost) return "http://localhost:5000/api/contact";
+
+    return "/api/contact";
   }
 
   var endpoint = resolveEndpoint();
-
-  if (endpoint && demoNotice) {
-    demoNotice.hidden = true;
-  }
 
   var phoneInput = form.querySelector('[name="phone"]');
   var serviceSelect = form.querySelector('[name="service"]');
@@ -420,14 +417,6 @@
       errorPanel.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
-    if (!endpoint) {
-      showSuccess(
-        "Demo form — nothing was sent",
-        "This enquiry form is a front-end demo: your details were validated but not submitted anywhere. Once the site owner connects an email service or backend, enquiries will be delivered automatically."
-      );
-      return;
-    }
-
     var submitButton = form.querySelector('[type="submit"]');
     var controller = typeof AbortController === "function" ? new AbortController() : null;
     var timeoutId = controller
@@ -458,7 +447,7 @@
       .then(function (result) {
         if (result.ok) {
           showSuccess(
-            "Enquiry sent",
+            "Message sent",
             (result.body && result.body.message) ||
               "Thanks — your enquiry was sent. A reply will follow using the contact method you chose."
           );

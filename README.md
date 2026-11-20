@@ -1,6 +1,6 @@
 # ProjectHub
 
-Academic project guidance website with a static Bootstrap frontend and a small Express + Nodemailer API that delivers contact enquiries by email.
+Academic project guidance website. The frontend is static Bootstrap HTML; enquiries are validated and emailed by a small Express + Nodemailer API that runs either as a Vercel function in this same project or as a standalone Node service.
 
 ```
 .
@@ -10,27 +10,42 @@ Academic project guidance website with a static Bootstrap frontend and a small E
 │   ├── js/config.js          # site owner settings (contact details, API URL)
 │   ├── js/main.js            # navigation, contact details, enquiry form
 │   └── favicon.svg
-└── server/                   # Express API (deployable Node web service)
-    ├── server.js
-    ├── package.json
-    └── .env.example
+├── api/                      # Vercel functions, served under /api/*
+│   ├── contact.js            # POST /api/contact
+│   └── health.js             # GET  /api/health
+├── server/                   # the same API as a standalone Node service
+│   ├── server.js
+│   ├── package.json
+│   └── .env.example
+└── package.json              # dependencies Vercel installs for api/
 ```
 
-- **Frontend:** static HTML, Bootstrap 5, Bootstrap Icons, Google Fonts and plain JavaScript. No build step.
-- **Backend:** Express 4, Nodemailer, CORS, `express-rate-limit`, `dotenv`. CommonJS, Node 18.17+.
-- **Storage:** none. Enquiries are **emailed but not stored** in any database, so there is no enquiry history to browse or export.
+- **Frontend:** static HTML, Bootstrap 5, Bootstrap Icons, Google Fonts, plain JavaScript. No build step.
+- **Backend:** Express 4, Nodemailer, CORS, `express-rate-limit`, `dotenv`. Node 18.17+.
+- **Storage:** none. Enquiries are **emailed, not stored**, so there is no enquiry history to browse or export.
+
+## How the form works
+
+`contact.html` posts JSON to `/api/contact`:
+
+1. `assets/js/config.js` `formEndpoint` (full override), else
+2. `<apiBaseUrl>/api/contact` when `apiBaseUrl` is set, else
+3. `http://localhost:5000/api/contact` when the page is served from `localhost`/`127.0.0.1`, else
+4. `/api/contact` on the same domain — the Vercel function in `api/`.
+
+The response decides the UI: `200` shows "Message sent" and resets the form; `400` marks the returned fields and shows the server message; `429`/`502`/`503`/network errors show a readable error and keep the entered details. Duplicate submits are blocked while a request is in flight.
 
 ## Local development
 
-### 1. Frontend
+### Frontend
 
 ```bash
 python3 -m http.server 3000        # or: npx serve .
 ```
 
-Open `http://localhost:3000`. Any static server works. When the page is served from `localhost` or `127.0.0.1`, the form automatically posts to `http://localhost:5000/api/contact`, so no config change is needed for local work.
+Open `http://localhost:3000`. The form automatically targets `http://localhost:5000/api/contact`.
 
-### 2. Backend
+### Backend
 
 ```bash
 cd server
@@ -39,22 +54,20 @@ cp .env.example .env               # then fill in real values
 npm run dev                        # or: npm start
 ```
 
-The API listens on `PORT` (default `5000`).
-
 ```bash
 curl http://localhost:5000/health
 # {"ok":true,"status":"ok","emailConfigured":true,...}
 ```
 
-`emailConfigured` is `false` until all SMTP/recipient variables are set; until then `POST /api/contact` returns **503** instead of pretending to send.
+`emailConfigured` is `false` until every SMTP/recipient variable is set; enquiries then return **503** instead of pretending to send.
 
 ## API
 
-| Method | Path           | Purpose                                                        |
-| ------ | -------------- | -------------------------------------------------------------- |
-| GET    | `/health`      | Liveness + whether email is configured. Used by the host.      |
-| POST   | `/api/contact` | Validate and email an enquiry. JSON body, max 5 per 15 min/IP. |
-| GET    | `/`            | Short JSON description of the API.                             |
+| Method | Path (Vercel) | Path (standalone) | Purpose                                   |
+| ------ | ------------- | ----------------- | ----------------------------------------- |
+| GET    | `/api/health` | `/health`         | Liveness + whether email is configured    |
+| POST   | `/api/contact`| `/api/contact`    | Validate and email an enquiry             |
+| GET    | –             | `/`               | Short JSON description of the API         |
 
 `POST /api/contact` body:
 
@@ -75,35 +88,61 @@ Responses:
 
 - `200` `{ "ok": true, "message": "..." }` — enquiry emailed.
 - `400` `{ "ok": false, "message": "...", "errors": { "email": "..." } }` — validation failed.
-- `413` request body over 16 kB, `429` rate limited, `403` origin not allowed.
+- `403` origin not allowed, `413` body over 16 kB, `429` rate limited.
 - `503` email environment variables incomplete, `502` SMTP delivery failed.
 
-Validation: name 2–80 chars, valid email ≤120, optional phone with 7–15 digits, service from the published list, optional college ≤120 and department ≤100, message 20–3000. All user text is escaped before it is placed in the HTML email; a plain-text alternative and `Reply-To` are included. Passwords and message contents are never logged.
+Validation: name 2–80 chars, valid email ≤120, optional phone with 7–15 digits, service from the published list, optional college ≤120 and department ≤100, message 20–3000. All user text is escaped before it enters the HTML email; a plain-text alternative and `Reply-To` are included. Passwords and message contents are never logged.
 
-## Environment variables (`server/.env`)
+Rate limiting is in-memory: on the standalone server it is a real per-IP limit, while on Vercel each function instance keeps its own counter, so it dampens abuse but is not a global quota.
 
-| Variable             | Required | Example                                        |
-| -------------------- | -------- | ---------------------------------------------- |
-| `PORT`               | no       | `5000` (hosts usually inject this)             |
-| `SMTP_HOST`          | yes      | `smtp.gmail.com`                               |
-| `SMTP_PORT`          | yes      | `465`                                          |
-| `SMTP_SECURE`        | no       | `true` for port 465, `false` for 587           |
-| `SMTP_USER`          | yes      | the sending mailbox address                    |
-| `SMTP_PASS`          | yes      | an app password from the email provider        |
-| `MAIL_FROM`          | no       | `ProjectHub <sender@example.com>`              |
-| `MAIL_TO`            | yes      | the inbox that receives enquiries              |
-| `ALLOWED_ORIGINS`    | no       | comma-separated browser origins                |
-| `RATE_LIMIT_MAX`     | no       | `5` submissions per window                     |
-| `RATE_LIMIT_WINDOW_MS` | no     | `900000` (15 minutes)                          |
-| `TRUST_PROXY_HOPS`   | no       | `1` behind Render/Railway TLS termination      |
+## Environment variables
 
-`server/.env` is git-ignored; only `.env.example` (placeholders) is committed. Never put SMTP credentials in `assets/js/config.js` or any frontend file.
+Set these in **Vercel → Project → Settings → Environment Variables** (Production, and Preview if you test there), or in `server/.env` for local work.
 
-For Gmail, `SMTP_PASS` must be a 16-character **App Password** created after enabling 2-Step Verification (Google Account → Security → App passwords). A normal account password will be rejected.
+| Variable               | Required | Example                                   |
+| ---------------------- | -------- | ----------------------------------------- |
+| `PORT`                 | no       | `5000` (standalone server only)           |
+| `SMTP_HOST`            | yes      | `smtp.gmail.com`                          |
+| `SMTP_PORT`            | yes      | `465`                                     |
+| `SMTP_SECURE`          | no       | `true` for 465, `false` for 587           |
+| `SMTP_USER`            | yes      | the sending mailbox address               |
+| `SMTP_PASS`            | yes      | the provider's app password               |
+| `MAIL_FROM`            | no       | `ProjectHub <sender@example.com>`         |
+| `MAIL_TO`              | yes      | inbox that receives enquiries             |
+| `ALLOWED_ORIGINS`      | no       | comma-separated browser origins           |
+| `RATE_LIMIT_MAX`       | no       | `5` submissions per window                |
+| `RATE_LIMIT_WINDOW_MS` | no       | `900000` (15 minutes)                     |
+| `TRUST_PROXY_HOPS`     | no       | `1` behind Vercel/Render TLS termination  |
 
-## Frontend configuration
+Commit only `.env.example` (placeholders). Never put credentials in `assets/js/config.js` or any frontend file.
 
-`assets/js/config.js`:
+For Gmail, `SMTP_PASS` must be a 16-character **App Password** created after enabling 2-Step Verification (Google Account → Security → App passwords). A normal account password is rejected.
+
+## Deploying on Vercel (frontend + API in one project)
+
+`api/contact.js` and `api/health.js` are picked up automatically; dependencies come from the root `package.json`. Vercel blocks outbound port 25 but allows **465 and 587**, which is what Nodemailer uses here.
+
+1. Push this repository (Vercel redeploys on push).
+2. Add the environment variables above to the Vercel project — at minimum `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO` (and `MAIL_FROM` if the sender differs).
+3. Redeploy so the functions receive the new variables (Deployments → Redeploy, or push any commit).
+4. Check `https://project-huubb.vercel.app/api/health` → `"emailConfigured": true`.
+5. Submit a real enquiry on `/contact.html` and confirm it arrives at `MAIL_TO`.
+
+Leave `apiBaseUrl` empty in `assets/js/config.js` for this setup: the form posts to `/api/contact` on the same domain, so there is no CORS hop.
+
+## Deploying `server/` as a separate Node service (optional)
+
+Use this when the API should live on its own host instead of Vercel. Render example:
+
+1. Render → **New → Web Service** → connect this repository.
+2. **Root Directory:** `server`, **Runtime:** Node, **Build Command:** `npm install`, **Start Command:** `npm start`, **Health Check Path:** `/health`.
+3. Add the same environment variables, plus `ALLOWED_ORIGINS=https://project-huubb.vercel.app`.
+4. Deploy and confirm `https://<your-service>.onrender.com/health` returns `200` with `"emailConfigured": true`.
+5. Set `apiBaseUrl: "https://<your-service>.onrender.com"` in `assets/js/config.js` and redeploy the frontend.
+
+Railway/Fly.io use the same values: root `server`, install `npm install`, start `npm start`, health `/health`.
+
+## Frontend settings (`assets/js/config.js`)
 
 ```js
 window.PROJECTHUB_CONFIG = {
@@ -111,58 +150,19 @@ window.PROJECTHUB_CONFIG = {
   phone: "",
   whatsapp: "",
   location: "",
-  apiBaseUrl: "",   // e.g. "https://projecthub-api.onrender.com"
+  apiBaseUrl: "",   // empty = same-domain /api/contact
   formEndpoint: "", // optional full override
   social: { linkedin: "", github: "", instagram: "" }
 };
 ```
 
-- Empty contact values stay hidden on every page — no placeholder details are shown.
-- `apiBaseUrl` is the deployed API origin; the form posts to `<apiBaseUrl>/api/contact`.
-- While `apiBaseUrl` is empty on a deployed site, the form shows a "not connected yet" notice and sends nothing. Locally it uses `http://localhost:5000/api/contact`.
-- If your deployment serves `js/config.js` instead of `assets/js/config.js`, make the same edit in that file.
-
-## Deploying the API
-
-Any Node web-service host works (Render, Railway, Fly.io, a VPS). Render example:
-
-1. Push this repository to GitHub.
-2. Render → **New → Web Service** → connect the repository.
-3. Settings:
-   - **Root Directory:** `server`
-   - **Runtime:** Node
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-   - **Health Check Path:** `/health`
-4. Add the environment variables from the table above (`SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`, `MAIL_TO`, and `ALLOWED_ORIGINS=https://project-huubb.vercel.app`). Do not commit them.
-5. Deploy, then confirm `https://<your-service>.onrender.com/health` returns `200` with `"emailConfigured": true`.
-6. Submit one real test enquiry and confirm it arrives in `MAIL_TO`.
-
-Railway/Fly.io use the same values: root `server`, install `npm install`, start `npm start`, health `/health`, and the same environment variables.
-
-## Deploying the frontend changes (Vercel)
-
-1. Set `apiBaseUrl` to the deployed API origin in `assets/js/config.js` (no trailing slash).
-2. Commit and push:
-   ```bash
-   git add .
-   git commit -m "Connect contact form to the enquiry API"
-   git push
-   ```
-3. Vercel redeploys automatically on push. Otherwise run `vercel --prod` from the project root, or use **Deployments → Redeploy** in the dashboard (disable the build cache so the updated `config.js` ships).
-4. Open `https://project-huubb.vercel.app/contact.html`, submit a test enquiry, and confirm:
-   - the "not connected yet" notice is gone,
-   - a success message appears and the form resets,
-   - the email arrives at `MAIL_TO`.
-
-If your Vercel project is connected to a different repository than this one, copy `server/`, the updated `assets/js/config.js`, `assets/js/main.js`, `assets/css/style.css` and `contact.html` into that repository before redeploying.
+Empty contact values stay hidden on every page — no placeholder details are shown. If your deployment serves `js/config.js` instead of `assets/js/config.js`, make the same edit in that file and redeploy.
 
 ## Values only the owner can provide
 
 - `SMTP_USER` — the mailbox that sends enquiries.
-- `SMTP_PASS` — that mailbox's app password (never shared in chat or committed).
+- `SMTP_PASS` — that mailbox's app password (set it in the host's environment variables, never in chat or Git).
 - `MAIL_TO` — the inbox that should receive enquiries.
 - `MAIL_FROM` — a sender address the SMTP account is allowed to use.
-- Deployed API URL — set as `apiBaseUrl` in `assets/js/config.js` after deploying the backend.
 
 No email addresses, credentials or contact details are invented anywhere in this project.
